@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import createArea from './function/createArea';
 import dropAll from './function/dropAll';
 import createCampaign from './function/createCampaign';
+import createClients from './function/createClients';
 dotenv.config({ path: '.env' });
 
 (async () => {
@@ -58,7 +59,7 @@ dotenv.config({ path: '.env' });
 			console.log('not implemented yet');
 		}
 		if (answer.list === 'createClients') {
-			console.log('not implemented yet');
+			createClients();
 		}
 	}
 })();
