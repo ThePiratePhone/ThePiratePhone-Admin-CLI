@@ -1,65 +1,43 @@
-import inquirer from 'inquirer';
+import { select } from '@inquirer/prompts';
+import chalk from 'chalk';
 import dotenv from 'dotenv';
-import createArea from './function/createArea';
-import dropAll from './function/dropAll';
-import createCampaign from './function/createCampaign';
-import createClients from './function/createClients';
-dotenv.config({ path: '.env' });
+import dbGestion from './dbGestion/dbGestion';
+import { simpleFiglet } from './utils';
 
-(async () => {
-	const answer = await inquirer.prompt({
-		name: 'list',
-		message: 'choose a action',
+dotenv.config({ path: '.env' });
+async function home() {
+	console.clear();
+	console.log('welcome in');
+	console.log(simpleFiglet('TPP Admin CLI'));
+	console.log(chalk.blueBright('=> Home'));
+	const answer = await select({
+		message: 'What are you doing ?',
 		choices: [
 			{
-				name: 'drop all',
-				value: 'dropAll'
+				name: 'Db gestion',
+				value: 'db_gestion'
 			},
 			{
-				name: 'Create Area',
-				value: 'createArea'
+				name: 'SAV',
+				value: 'sav'
 			},
 			{
-				name: 'Create Campaign',
-				value: 'createCampaign'
-			},
-			{
-				name: 'Create Client(s)',
-				value: 'createClient'
+				name: chalk.redBright('Exit'),
+				value: 'exit'
 			}
-		],
-		type: 'list'
+		]
 	});
-	if (answer.list === 'dropAll') {
-		dropAll();
+	switch (answer) {
+		case 'db_gestion':
+			dbGestion();
+			break;
+		case 'sav':
+			// sav();
+			break;
+		case 'exit':
+			process.exit(0);
 	}
-	if (answer.list === 'createArea') {
-		createArea();
-	}
-	if (answer.list === 'createCampaign') {
-		createCampaign();
-	}
-	if (answer.list === 'createClient') {
-		const answer = await inquirer.prompt({
-			name: 'list',
-			message: 'choose a action',
-			choices: [
-				{
-					name: 'Create one Client',
-					value: 'createClient'
-				},
-				{
-					name: 'Create many Clients',
-					value: 'createClients'
-				}
-			],
-			type: 'list'
-		});
-		if (answer.list === 'createClient') {
-			console.log('not implemented yet');
-		}
-		if (answer.list === 'createClients') {
-			createClients();
-		}
-	}
-})();
+}
+// home();
+dbGestion();
+export default home;
