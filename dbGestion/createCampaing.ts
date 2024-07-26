@@ -27,6 +27,8 @@ export default async function createCampaign() {
 	log(`models registered in ${Date.now() - time}ms`, 'info');
 	log('this is existing Campaign DB');
 	await printCampaign(connection);
+	process.exit(0);
+	return;
 
 	do {
 		name = await input({ message: `what is the ${chalk.blueBright('name')} of the new campaing ?` });

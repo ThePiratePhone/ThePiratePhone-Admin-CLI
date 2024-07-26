@@ -39,6 +39,6 @@ async function home() {
 			process.exit(0);
 	}
 }
-home();
-// createCampaign();
+// home();
+createCampaign();
 export default home;

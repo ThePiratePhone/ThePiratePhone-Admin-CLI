@@ -80,15 +80,10 @@ async function printArea(
 		maxAdminPasswordLength = Math.max(...adminPasswords.map(adminPasswords => adminPasswords.length));
 
 	//print
-	printHeader(
-		[maxNameLength, maxPasswordLength, maxAdminPasswordLength],
-		[names.shift() ?? 'error', passwords.shift() ?? 'error', adminPasswords.shift() ?? 'error'],
-		IColor,
-		lColor
-	);
-	printRow(
+	printTab(
 		[maxNameLength, maxPasswordLength, maxAdminPasswordLength],
 		[names, passwords, adminPasswords],
+		IColor,
 		tColor,
 		lColor
 	);
@@ -112,7 +107,6 @@ async function printArea(
  */
 async function printCampaign(
 	connection: mongoose.Connection,
-	printPassword: boolean = false,
 	limit: number = 10,
 	IColor: Function = chalk.blueBright,
 	tColor: Function = chalk.greenBright,
@@ -167,35 +161,7 @@ async function printCampaign(
 		maxCallPermitedsLength = Math.max(...callPermiteds.map(callPermiteds => callPermiteds.length));
 
 	//print
-	printHeader(
-		[
-			maxNameLength,
-			maxScriptLength,
-			maxActiveLength,
-			maxAreaLength,
-			maxPasswordLength,
-			maxNbMaxCallCampaignLength,
-			maxTimeBetweenCallsLength,
-			maxCallHoursStartsLength,
-			maxCallHoursEndsLength,
-			maxCallPermitedsLength
-		],
-		[
-			names.shift() ?? 'error',
-			scripts.shift() ?? 'error',
-			actives.shift() ?? 'error',
-			areas.shift() ?? 'error',
-			passwords.shift() ?? 'error',
-			nbMaxCallCampaign.shift() ?? 'error',
-			timeBetweenCalls.shift() ?? 'error',
-			callHoursStarts.shift() ?? 'error',
-			callHoursEnds.shift() ?? 'error',
-			callPermiteds.shift() ?? 'error'
-		],
-		IColor,
-		lColor
-	);
-	printRow(
+	printTab(
 		[
 			maxNameLength,
 			maxScriptLength,
@@ -220,42 +186,32 @@ async function printCampaign(
 			callHoursEnds,
 			callPermiteds
 		],
+		IColor,
 		tColor,
 		lColor
 	);
+
 	if (limit < (await campaign.countDocuments())) {
 		console.log(chalk.red(`*${limit} firsts ellements were displayed`));
 	}
 }
-
+/**
+ * print content of a table, add one space before and after each value
+ * @param valueMaxLenght {same length of values} array of max length of each value
+ * @param values {same length of valueMaxLenght} array of value on each colume: [["val1 column1", "V2C1"],["V1C2"...]]
+ * @param {function} IColor is color of index
+ * @param {function} tColor is color of text
+ * @param {function} lColor is color of ligne
+ */
 function printTab(
 	valueMaxLenght: Array<number>,
 	values: Array<Array<string>>,
 	IColor: Function = chalk.blueBright,
 	tColor: Function = chalk.greenBright,
-	lColor: Function = chalk.gray
+	lColor: Function = chalk.gray,
+	rightCut: boolean = false,
+	leftCut: boolean = false
 ) {
-	printHeader(
-		valueMaxLenght,
-		values.map(el => el.shift() ?? 'error'),
-		IColor,
-		lColor
-	);
-	printRow(valueMaxLenght, values, tColor, lColor);
-}
-
-/**
- * print first ligne for a table, add one space before and after each value
- * @param valueMaxLenght {same length of values} array of max length of each value
- * @param values {same length of valueMaxLenght} array of name for each column
- */
-function printHeader(valueMaxLenght: Array<number>, values: Array<string>, Icol: Function, lCol: Function) {
-	let header: String = lCol('╔');
-	//if array is empty maths max return -Infinity
-	if (valueMaxLenght.length != values.length) {
-		throw new Error('valueMaxLenght and values must have the same length');
-	}
-
 	//if array is empty maths max return -Infinity
 	valueMaxLenght.forEach((el, i) => {
 		if (el == 0 || el == -Infinity) {
@@ -263,6 +219,46 @@ function printHeader(valueMaxLenght: Array<number>, values: Array<string>, Icol:
 			values.splice(i);
 		}
 	});
+	let tabSize = valueMaxLenght.reduce((acc, el) => acc + el + 3, 4);
+
+	if (tabSize > process.stdout.columns) {
+		let secondaryMaxLenght = [],
+			secondaryValues = [];
+
+		while (tabSize > process.stdout.columns) {
+			secondaryMaxLenght.push(valueMaxLenght.pop() ?? 0);
+			secondaryValues.push(values.pop() ?? ['']);
+			tabSize = valueMaxLenght.reduce((acc, el) => acc + el + 3, 4);
+		}
+		printTab(valueMaxLenght, values, IColor, tColor, lColor, true, leftCut);
+		printTab(secondaryMaxLenght, secondaryValues, IColor, tColor, lColor, rightCut, true);
+		return;
+	}
+
+	printHeader(
+		valueMaxLenght,
+		values.map(el => el.shift() ?? 'error'),
+		IColor,
+		lColor,
+		rightCut,
+		leftCut
+	);
+	printRow(valueMaxLenght, values, tColor, lColor, rightCut, leftCut);
+}
+
+function printHeader(
+	valueMaxLenght: Array<number>,
+	values: Array<string>,
+	Icol: Function,
+	lCol: Function,
+	rightCut: boolean = false,
+	leftCut: boolean = false
+) {
+	let header: String = leftCut ? '═╦' : '╔';
+	//if array is empty maths max return -Infinity
+	if (valueMaxLenght.length != values.length) {
+		throw new Error('valueMaxLenght and values must have the same length');
+	}
 
 	for (let i = 0; i < valueMaxLenght.length; i++) {
 		header += '═'.repeat(valueMaxLenght[i] + 2);
@@ -271,79 +267,73 @@ function printHeader(valueMaxLenght: Array<number>, values: Array<string>, Icol:
 			header += '╦';
 		}
 	}
-	header += '╗';
+	header += rightCut ? '╦═' : '╗';
 	//print first ligne
 	console.log(lCol(header));
 
-	header = lCol('║');
+	header = lCol(leftCut ? '·║' : '║');
 	for (let i = 0; i < valueMaxLenght.length; i++) {
 		let space = (valueMaxLenght[i] + 2 - values[i].length) / 2;
 
 		header += ' '.repeat(space);
 		header += Icol(Number.isInteger(space) ? values[i] : ' ' + values[i]);
 		header += ' '.repeat(space);
-		header += lCol('║');
+		header += lCol(rightCut && i == valueMaxLenght.length - 1 ? '║·' : '║');
 	}
 	//print value L1
 	console.log(header);
-	header = '╠';
+	header = leftCut ? '═╬' : '╠';
 	for (let i = 0; i < valueMaxLenght.length; i++) {
 		header += '═'.repeat(valueMaxLenght[i] + 2);
 		if (i < valueMaxLenght.length - 1) {
 			header += '╬';
 		}
 	}
-	header += '╣';
+	header += rightCut ? '╬═' : '╣';
 	//print L3
 	console.log(lCol(header));
 }
 
-/**
- * print content of a table, add one space before and after each value
- * @param valueMaxLenght {same length of values} array of max length of each value
- * @param values {same length of valueMaxLenght} array of value on each colume: [["val1 column1", "V2C1"],["V1C2"...]]
- */
-function printRow(valueMaxLenght: Array<number>, values: Array<Array<string>>, tCol: Function, lCol: Function) {
+function printRow(
+	valueMaxLenght: Array<number>,
+	values: Array<Array<string>>,
+	tCol: Function,
+	lCol: Function,
+	rightCut: boolean = false,
+	leftCut: boolean = false
+) {
 	if (valueMaxLenght.length != values.length) {
 		throw new Error('valueMaxLenght and values must have the same length');
 	}
 
-	//if array is empty maths max return -Infinity
-	valueMaxLenght.forEach((el, i) => {
-		if (el == 0 || el == -Infinity) {
-			valueMaxLenght.splice(i);
-			values.splice(i);
-		}
-	});
-
 	for (let i = 0; i < values[0].length; i++) {
-		let row = lCol('║');
+		let row = lCol(leftCut ? '·║' : '║');
 		for (let j = 0; j < values.length; j++) {
 			let space = (valueMaxLenght[j] + 2 - values[j][i].length) / 2;
 			row += ' '.repeat(space);
 			row += tCol(Number.isInteger(space) ? values[j][i] : ' ' + values[j][i]);
 			row += ' '.repeat(space);
-			row += lCol('║');
+			row += lCol(rightCut && j == valueMaxLenght.length - 1 ? '║·' : '║');
 		}
 		console.log(row);
 		if (i < values[0].length - 1) {
-			row = '╟';
+			row = leftCut ? '─╫' : '╟';
 			for (let j = 0; j < values.length; j++) {
 				row += '─'.repeat(valueMaxLenght[j] + 2);
 				if (j < values.length - 1) {
 					row += '╫';
 				} else {
-					row += '╢';
+					row += rightCut ? '╫─' : '╢';
 				}
 			}
 		} else {
-			row = '╚';
+			row = leftCut ? '═╩' : '╚';
 			for (let j = 0; j < values.length; j++) {
 				row += '═'.repeat(valueMaxLenght[j] + 2);
 				if (j < values.length - 1) {
 					row += '╩';
 				} else {
-					row += '╝';
+					row += rightCut ? '╩═' : '╝';
 				}
 			}
 		}
