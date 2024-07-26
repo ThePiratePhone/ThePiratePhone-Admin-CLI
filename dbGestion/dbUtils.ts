@@ -74,19 +74,8 @@ async function printArea(
 		adminPasswords.unshift('Admin password');
 	}
 
-	//calcul size
-	const maxNameLength = Math.max(...names.map(name => name.length)),
-		maxPasswordLength = Math.max(...passwords.map(password => password.length)),
-		maxAdminPasswordLength = Math.max(...adminPasswords.map(adminPasswords => adminPasswords.length));
-
 	//print
-	printTab(
-		[maxNameLength, maxPasswordLength, maxAdminPasswordLength],
-		[names, passwords, adminPasswords],
-		IColor,
-		tColor,
-		lColor
-	);
+	printTab([names, passwords, adminPasswords], IColor, tColor, lColor);
 	if (limit < (await area.countDocuments())) {
 		console.log(chalk.red(`*${limit} firsts ellements were displayed`));
 	}
@@ -149,31 +138,8 @@ async function printCampaign(
 	const callPermiteds = campaigns.map(campaign => campaign.callPermited.toString());
 	callPermiteds.unshift('Call permited');
 
-	const maxNameLength = Math.max(...names.map(name => name.length)),
-		maxScriptLength = Math.max(...scripts.map(script => script.length)),
-		maxActiveLength = Math.max(...actives.map(active => active.length)),
-		maxAreaLength = Math.max(...areas.map(area => area.length)),
-		maxPasswordLength = Math.max(...passwords.map(password => password.length)),
-		maxNbMaxCallCampaignLength = Math.max(...nbMaxCallCampaign.map(nbMaxCallCampaign => nbMaxCallCampaign.length)),
-		maxTimeBetweenCallsLength = Math.max(...timeBetweenCalls.map(timeBetweenCalls => timeBetweenCalls.length)),
-		maxCallHoursStartsLength = Math.max(...callHoursStarts.map(callHoursStarts => callHoursStarts.length)),
-		maxCallHoursEndsLength = Math.max(...callHoursEnds.map(callHoursEnds => callHoursEnds.length)),
-		maxCallPermitedsLength = Math.max(...callPermiteds.map(callPermiteds => callPermiteds.length));
-
 	//print
 	printTab(
-		[
-			maxNameLength,
-			maxScriptLength,
-			maxActiveLength,
-			maxAreaLength,
-			maxPasswordLength,
-			maxNbMaxCallCampaignLength,
-			maxTimeBetweenCallsLength,
-			maxCallHoursStartsLength,
-			maxCallHoursEndsLength,
-			maxCallPermitedsLength
-		],
 		[
 			names,
 			scripts,
@@ -197,14 +163,12 @@ async function printCampaign(
 }
 /**
  * print content of a table, add one space before and after each value
- * @param valueMaxLenght {same length of values} array of max length of each value
  * @param values {same length of valueMaxLenght} array of value on each colume: [["val1 column1", "V2C1"],["V1C2"...]]
  * @param {function} IColor is color of index
  * @param {function} tColor is color of text
  * @param {function} lColor is color of ligne
  */
 function printTab(
-	valueMaxLenght: Array<number>,
 	values: Array<Array<string>>,
 	IColor: Function = chalk.blueBright,
 	tColor: Function = chalk.greenBright,
@@ -212,13 +176,8 @@ function printTab(
 	rightCut: boolean = false,
 	leftCut: boolean = false
 ) {
-	//if array is empty maths max return -Infinity
-	valueMaxLenght.forEach((el, i) => {
-		if (el == 0 || el == -Infinity) {
-			valueMaxLenght.splice(i);
-			values.splice(i);
-		}
-	});
+	const valueMaxLenght = values.map(el => Math.max(...el.map(el => el.length)));
+
 	let tabSize = valueMaxLenght.reduce((acc, el) => acc + el + 3, 4);
 
 	if (tabSize > process.stdout.columns) {
@@ -230,8 +189,8 @@ function printTab(
 			secondaryValues.push(values.pop() ?? ['']);
 			tabSize = valueMaxLenght.reduce((acc, el) => acc + el + 3, 4);
 		}
-		printTab(valueMaxLenght, values, IColor, tColor, lColor, true, leftCut);
-		printTab(secondaryMaxLenght, secondaryValues, IColor, tColor, lColor, rightCut, true);
+		printTab(values, IColor, tColor, lColor, true, leftCut);
+		printTab(secondaryValues, IColor, tColor, lColor, rightCut, true);
 		return;
 	}
 
