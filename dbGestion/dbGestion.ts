@@ -4,6 +4,7 @@ import home from '../index';
 import { end, simpleFiglet } from '../utils';
 import { destrucDb } from './dbUtils';
 import converter from './V1toV2/converter';
+import createArea from './createArea';
 
 async function dbGestion() {
 	console.clear();
@@ -19,6 +20,10 @@ async function dbGestion() {
 			{
 				name: 'Convert db',
 				value: 'convert_db'
+			},
+			{
+				name: 'Create Area',
+				value: 'create_area'
 			},
 			{
 				name: chalk.greenBright('Home'),
@@ -37,6 +42,9 @@ async function dbGestion() {
 			break;
 		case 'convert_db':
 			await converter();
+			break;
+		case 'create_area':
+			await createArea();
 			break;
 		case 'home':
 			home();

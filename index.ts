@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import dotenv from 'dotenv';
 import dbGestion from './dbGestion/dbGestion';
 import { simpleFiglet } from './utils';
+import createArea from './dbGestion/createArea';
 
 dotenv.config({ path: '.env' });
 async function home() {
@@ -38,6 +39,6 @@ async function home() {
 			process.exit(0);
 	}
 }
-// home();
-dbGestion();
+home();
+// createArea();
 export default home;
