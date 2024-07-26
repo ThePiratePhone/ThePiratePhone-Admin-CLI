@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import mongoose from 'mongoose';
 import { AreaModel } from '../Models';
 import { end, log } from '../utils';
-import { printArea, printCampaign } from './dbUtils';
+import { printArea, printCampaign, printTab } from './dbUtils';
 
 export default async function createArea() {
 	let corect = false,
@@ -27,9 +27,11 @@ export default async function createArea() {
 		password = await input({ message: `what is the ${chalk.blueBright('password')} for joign the area ?` });
 
 		console.log('recapitulatif:');
-		console.log('name: ' + name);
-		console.log('adminPassword: ' + adminPassword);
-		console.log('password: ' + password);
+		printTab([
+			['name', name],
+			['adminPassword', adminPassword],
+			['password', password]
+		]);
 
 		corect = await confirm({
 			message: 'Is it correct ?',

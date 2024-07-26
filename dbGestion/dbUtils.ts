@@ -62,17 +62,12 @@ async function printArea(
 		return;
 	}
 
-	const names = areas.map(area => area.name);
-	names.unshift('Name');
-
-	const passwords = areas.map(area => area.password);
-	passwords.unshift('Password');
-
-	let adminPasswords: Array<string> = [];
-	if (printPassword) {
+	const names = areas.map(area => area.name),
+		passwords = areas.map(area => area.password),
 		adminPasswords = areas.map(area => area.adminPassword);
-		adminPasswords.unshift('Admin password');
-	}
+	names.unshift('Name');
+	passwords.unshift('Password');
+	adminPasswords.unshift('Admin password');
 
 	//print
 	printTab([names, passwords, adminPasswords], IColor, tColor, lColor);
@@ -299,4 +294,4 @@ function printRow(
 		console.log(lCol(row));
 	}
 }
-export { destrucDb, printArea, printCampaign };
+export { destrucDb, printArea, printCampaign, printTab };

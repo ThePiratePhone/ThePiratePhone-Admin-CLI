@@ -4,7 +4,7 @@ import DatePrompt from 'inquirer-date-prompt';
 import mongoose from 'mongoose';
 import { AreaModel, CampaignModel } from '../Models';
 import { end, log } from '../utils';
-import { printArea, printCampaign } from './dbUtils';
+import { printArea, printCampaign, printTab } from './dbUtils';
 const inquirer = require('inquirer');
 
 export default async function createCampaign() {
@@ -63,12 +63,14 @@ export default async function createCampaign() {
 			choices: areaChoices
 		});
 		console.log('recapitulatif:');
-		console.log('name: ' + name);
-		console.log('script: ' + script);
-		console.log('dateStart: ' + dateStart);
-		console.log('dateEnd: ' + dateEnd);
-		console.log('CampaignPassword: ' + CampaignPassword);
-		console.log('areaId: ' + areaId);
+		printTab([
+			['name', name],
+			['script', script],
+			['dateStart', dateStart],
+			['dateEnd', dateEnd],
+			['password', CampaignPassword],
+			['areaId', areaId]
+		]);
 		corect = await confirm({
 			message: 'Is it correct ?',
 			default: true
