@@ -38,10 +38,23 @@ async function destrucDb() {
  * @param connection {mongoose.Connection}
  * @param limit number of area print
  * @param printPassword {bolean} chose if print the adminPassword
+ * @param {function} IColor is color of index
+ * @param {function} tColor is color of text
+ * @param {function} lColor is color of ligne
  * @default printPassword false
  * @default limit 10
+ * @default IColor chalk.blueBright
+ * @default tColor chalk.greenBright
+ * @default lColor chalk.gray
  */
-async function printArea(connection: mongoose.Connection, limit: number = 10, printPassword: boolean = false) {
+async function printArea(
+	connection: mongoose.Connection,
+	limit: number = 10,
+	printPassword: boolean = false,
+	IColor: Function = chalk.blueBright,
+	tColor: Function = chalk.greenBright,
+	lColor: Function = chalk.gray
+) {
 	const area = connection.model('Area', AreaModel);
 	const areas = await area.find().limit(limit);
 	if (areas.length == 0) {
@@ -69,9 +82,16 @@ async function printArea(connection: mongoose.Connection, limit: number = 10, pr
 	//print
 	printHeader(
 		[maxNameLength, maxPasswordLength, maxAdminPasswordLength],
-		[names.shift() ?? 'error', passwords.shift() ?? 'error', adminPasswords.shift() ?? 'error']
+		[names.shift() ?? 'error', passwords.shift() ?? 'error', adminPasswords.shift() ?? 'error'],
+		IColor,
+		lColor
 	);
-	printRow([maxNameLength, maxPasswordLength, maxAdminPasswordLength], [names, passwords, adminPasswords]);
+	printRow(
+		[maxNameLength, maxPasswordLength, maxAdminPasswordLength],
+		[names, passwords, adminPasswords],
+		tColor,
+		lColor
+	);
 	if (limit < (await area.countDocuments())) {
 		console.log(chalk.red(`*${limit} firsts ellements were displayed`));
 	}
@@ -82,8 +102,8 @@ async function printArea(connection: mongoose.Connection, limit: number = 10, pr
  * @param valueMaxLenght {same length of values} array of max length of each value
  * @param values {same length of valueMaxLenght} array of name for each column
  */
-function printHeader(valueMaxLenght: Array<number>, values: Array<string>) {
-	let header: String = '╔';
+function printHeader(valueMaxLenght: Array<number>, values: Array<string>, Icol: Function, lCol: Function) {
+	let header: String = lCol('╔');
 	//if array is empty maths max return -Infinity
 	if (valueMaxLenght.length != values.length) {
 		throw new Error('valueMaxLenght and values must have the same length');
@@ -106,16 +126,16 @@ function printHeader(valueMaxLenght: Array<number>, values: Array<string>) {
 	}
 	header += '╗';
 	//print first ligne
-	console.log(header);
+	console.log(lCol(header));
 
-	header = '║';
+	header = lCol('║');
 	for (let i = 0; i < valueMaxLenght.length; i++) {
 		let space = (valueMaxLenght[i] + 2 - values[i].length) / 2;
 
 		header += ' '.repeat(space);
-		header += Number.isInteger(space) ? chalk.blueBright(values[i]) : ' ' + chalk.blueBright(values[i]);
+		header += Icol(Number.isInteger(space) ? values[i] : ' ' + values[i]);
 		header += ' '.repeat(space);
-		header += '║';
+		header += lCol('║');
 	}
 	//print value L1
 	console.log(header);
@@ -128,7 +148,7 @@ function printHeader(valueMaxLenght: Array<number>, values: Array<string>) {
 	}
 	header += '╣';
 	//print L3
-	console.log(header);
+	console.log(lCol(header));
 }
 
 /**
@@ -136,7 +156,7 @@ function printHeader(valueMaxLenght: Array<number>, values: Array<string>) {
  * @param valueMaxLenght {same length of values} array of max length of each value
  * @param values {same length of valueMaxLenght} array of value on each colume: [["val1 column1", "V2C1"],["V1C2"...]]
  */
-function printRow(valueMaxLenght: Array<number>, values: Array<Array<string>>) {
+function printRow(valueMaxLenght: Array<number>, values: Array<Array<string>>, tCol: Function, lCol: Function) {
 	if (valueMaxLenght.length != values.length) {
 		throw new Error('valueMaxLenght and values must have the same length');
 	}
@@ -150,13 +170,13 @@ function printRow(valueMaxLenght: Array<number>, values: Array<Array<string>>) {
 	});
 
 	for (let i = 0; i < values[0].length; i++) {
-		let row = '║';
+		let row = lCol('║');
 		for (let j = 0; j < values.length; j++) {
 			let space = (valueMaxLenght[j] + 2 - values[j][i].length) / 2;
 			row += ' '.repeat(space);
-			row += Number.isInteger(space) ? values[j][i] : ' ' + values[j][i];
+			row += tCol(Number.isInteger(space) ? values[j][i] : ' ' + values[j][i]);
 			row += ' '.repeat(space);
-			row += '║';
+			row += lCol('║');
 		}
 		console.log(row);
 		if (i < values[0].length - 1) {
@@ -180,7 +200,7 @@ function printRow(valueMaxLenght: Array<number>, values: Array<Array<string>>) {
 				}
 			}
 		}
-		console.log(row);
+		console.log(lCol(row));
 	}
 }
 export { destrucDb, printArea };
