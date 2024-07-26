@@ -40,4 +40,8 @@ async function end() {
 		home();
 	}
 }
-export { clearligne, end, log, simpleFiglet };
+
+function generateRandomPhoneNumber() {
+	return '+33' + (Math.floor(Math.random() * (9_99_99_99_99 - 1_00_00_00_00)) + 1_00_00_00_00);
+}
+export { clearligne, end, log, simpleFiglet, generateRandomPhoneNumber };

@@ -2,10 +2,11 @@ import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import home from '../index';
 import { end, simpleFiglet } from '../utils';
-import { destrucDb } from './dbUtils';
-import converter from './V1toV2/converter';
 import createArea from './createArea';
 import createCampaign from './createCampaing';
+import createClient from './createClient';
+import { destrucDb } from './dbUtils';
+import converter from './V1toV2/converter';
 
 async function dbGestion() {
 	console.clear();
@@ -31,6 +32,10 @@ async function dbGestion() {
 				value: 'create_campaign'
 			},
 			{
+				name: 'Create Client(s)',
+				value: 'create_client'
+			},
+			{
 				name: chalk.greenBright('Home'),
 				value: 'home'
 			},
@@ -53,6 +58,9 @@ async function dbGestion() {
 			break;
 		case 'create_campaign':
 			await createCampaign();
+			break;
+		case 'create_client':
+			await createClient();
 			break;
 		case 'home':
 			home();

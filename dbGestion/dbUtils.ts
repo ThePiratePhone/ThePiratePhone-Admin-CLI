@@ -1,8 +1,8 @@
+import { confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
 import mongoose from 'mongoose';
-import { log } from '../utils';
 import { AreaModel, CallerModel, CallModel, CampaignModel, ClientModel } from '../Models';
-import { confirm, number } from '@inquirer/prompts';
+import { log } from '../utils';
 
 async function destrucDb() {
 	const answer = await confirm({
