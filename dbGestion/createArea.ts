@@ -1,15 +1,16 @@
-import { input, confirm } from '@inquirer/prompts';
+import { confirm, input } from '@inquirer/prompts';
+import chalk from 'chalk';
 import mongoose from 'mongoose';
-import { end, log } from '../utils';
 import { AreaModel } from '../Models';
-import { printArea } from './dbUtils';
+import { end, log } from '../utils';
+import { printArea, printCampaign } from './dbUtils';
 
 export default async function createArea() {
-	let corect = false;
-	let name = '';
-	let adminPassword = '';
-	let password = '';
-	let time = Date.now();
+	let corect = false,
+		name = '',
+		adminPassword = '',
+		password = '',
+		time = Date.now();
 	log('connecting to database...', 'log');
 	const connection = mongoose.createConnection(process.env.defaultURI ?? '');
 	log(`connected in ${Date.now() - time}ms`, 'info');
@@ -21,9 +22,9 @@ export default async function createArea() {
 	await printArea(connection);
 
 	do {
-		name = await input({ message: 'what is the name of the new area ?' });
-		adminPassword = await input({ message: 'what is the admin password ?' });
-		password = await input({ message: 'what is the password for joign the area ?' });
+		name = await input({ message: `what is the ${chalk.blueBright('name')} of the new area ?` });
+		adminPassword = await input({ message: `what is the ${chalk.blueBright('admin password')} ?` });
+		password = await input({ message: `what is the ${chalk.blueBright('password')} for joign the area ?` });
 
 		console.log('recapitulatif:');
 		console.log('name: ' + name);

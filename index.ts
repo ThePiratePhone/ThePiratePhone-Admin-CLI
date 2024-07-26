@@ -1,9 +1,9 @@
 import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
+import createCampaign from './dbGestion/createCampaing';
 import dotenv from 'dotenv';
 import dbGestion from './dbGestion/dbGestion';
 import { simpleFiglet } from './utils';
-import createArea from './dbGestion/createArea';
 
 dotenv.config({ path: '.env' });
 async function home() {
@@ -40,5 +40,5 @@ async function home() {
 	}
 }
 home();
-// createArea();
+// createCampaign();
 export default home;

@@ -5,6 +5,7 @@ import { end, simpleFiglet } from '../utils';
 import { destrucDb } from './dbUtils';
 import converter from './V1toV2/converter';
 import createArea from './createArea';
+import createCampaign from './createCampaing';
 
 async function dbGestion() {
 	console.clear();
@@ -26,6 +27,10 @@ async function dbGestion() {
 				value: 'create_area'
 			},
 			{
+				name: 'Create Campaign',
+				value: 'create_campaign'
+			},
+			{
 				name: chalk.greenBright('Home'),
 				value: 'home'
 			},
@@ -45,6 +50,9 @@ async function dbGestion() {
 			break;
 		case 'create_area':
 			await createArea();
+			break;
+		case 'create_campaign':
+			await createCampaign();
 			break;
 		case 'home':
 			home();
