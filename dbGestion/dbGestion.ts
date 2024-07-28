@@ -3,6 +3,7 @@ import chalk from 'chalk';
 import home from '../index';
 import { end, simpleFiglet } from '../utils';
 import createArea from './createArea';
+import createCaller from './createCaller';
 import createCampaign from './createCampaing';
 import createClient from './createClient';
 import { destrucDb } from './dbUtils';
@@ -36,6 +37,10 @@ async function dbGestion() {
 				value: 'create_client'
 			},
 			{
+				name: 'Create caller',
+				value: 'create_caller'
+			},
+			{
 				name: chalk.greenBright('Home'),
 				value: 'home'
 			},
@@ -61,6 +66,9 @@ async function dbGestion() {
 			break;
 		case 'create_client':
 			await createClient();
+			break;
+		case 'create_caller':
+			await createCaller();
 			break;
 		case 'home':
 			home();

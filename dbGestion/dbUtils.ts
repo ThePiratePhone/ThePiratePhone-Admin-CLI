@@ -156,6 +156,7 @@ async function printCampaign(
 		console.log(chalk.red(`*${limit} firsts ellements were displayed`));
 	}
 }
+
 /**
  * print content of a table, add one space before and after each value
  * @param values {same length of valueMaxLenght} array of value on each colume: [["val1 column1", "V2C1"],["V1C2"...]]
