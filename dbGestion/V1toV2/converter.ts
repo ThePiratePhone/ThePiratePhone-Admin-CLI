@@ -1,12 +1,51 @@
+import { input, select } from '@inquirer/prompts';
+import chalk from 'chalk';
 import mongoose, { ObjectId, Types } from 'mongoose';
+import home from '../../index';
+import { end, log } from '../../utils';
+import { destrucDb } from '../dbUtils';
+import convert2to2_2 from '../V2toV2.2/converter';
 import { areaModel1, callerModel1, campaignModel1, clientModel1 } from './V1Models';
 import { areaModel2, callerModel2, callModel2, campaignModel2, clientModel2 } from './V2Models';
-import { destrucDb } from '../dbUtils';
-import { end, log } from '../../utils';
-import { input } from '@inquirer/prompts';
 
 export default async function converter() {
-	console.log('test');
+	const answer = await select({
+		message: 'you want to convert the database of ?',
+		choices: [
+			{
+				name: '1 to 2',
+				value: '1to2'
+			},
+			{
+				name: '2.0 to 2.2',
+				value: '2to2.2'
+			},
+			{
+				name: chalk.greenBright('home'),
+				value: 'home'
+			},
+			{
+				name: chalk.redBright('Exit'),
+				value: 'exit'
+			}
+		]
+	});
+
+	switch (answer) {
+		case '1to2':
+			await convert1to2();
+			break;
+		case '2to2.2':
+			await convert2to2_2();
+			break;
+		case 'home':
+			home();
+			break;
+		case 'exit':
+			process.exit(0);
+	}
+}
+async function convert1to2() {
 	const URI1 = await input({ message: 'Enter the URI of the origine database:' });
 	const URI2 = await input({ message: 'Enter the URI of the destination database:' });
 	//create connections

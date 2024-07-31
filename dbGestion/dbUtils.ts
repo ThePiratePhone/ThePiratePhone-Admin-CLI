@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import { AreaModel, CallerModel, CallModel, CampaignModel, ClientModel } from '../Models';
 import { log } from '../utils';
 
-async function destrucDb() {
+async function destrucDb(uri: string = process.env.defaultURI ?? '') {
 	const answer = await confirm({
 		message: 'Are you want to ' + chalk.red('delete') + ' database ?',
 		default: false
@@ -12,7 +12,7 @@ async function destrucDb() {
 	if (answer) {
 		let time = Date.now();
 		log('connecting to database...', 'log');
-		const connection = mongoose.createConnection(process.env.defaultURI ?? '');
+		const connection = mongoose.createConnection(uri);
 		log(`connected in ${Date.now() - time}ms`, 'info');
 		log('registering models...', 'log');
 		time = Date.now();
