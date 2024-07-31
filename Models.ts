@@ -43,19 +43,16 @@ const CallModel = new mongoose.Schema({
 		required: true
 	},
 	satisfaction: {
-		type: Number,
-		required: false,
-		//[voted, not interested, interested, not answered, removed]
-		enum: [0, 1, 2, 3, 4]
+		type: String,
+		required: false
 	},
 	comment: {
 		type: String,
 		required: false
 	},
 	status: {
-		type: String,
-		required: true,
-		enum: ['In progress', 'to recall', 'Done', 'deleted']
+		type: Boolean,
+		required: true
 	},
 	start: {
 		type: Date,
@@ -132,11 +129,6 @@ const CampaignModel = new mongoose.Schema({
 		type: Date,
 		default: Date.now()
 	},
-	trashUser: {
-		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Client',
-		required: true
-	},
 	password: {
 		type: String,
 		required: true
@@ -166,6 +158,11 @@ const CampaignModel = new mongoose.Schema({
 		type: Boolean,
 		require: true,
 		default: true
+	},
+	status: {
+		type: [String],
+		require: true,
+		default: ['à suprimer', 'à rapeler', 'tout bon']
 	}
 });
 
@@ -200,6 +197,10 @@ const ClientModel = new mongoose.Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now()
+	},
+	delete: {
+		type: Boolean,
+		default: false
 	}
 });
 

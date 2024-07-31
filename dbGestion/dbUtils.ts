@@ -6,7 +6,7 @@ import { log } from '../utils';
 
 async function destrucDb(uri: string = process.env.defaultURI ?? '') {
 	const answer = await confirm({
-		message: 'Are you want to ' + chalk.red('delete') + ' database ?',
+		message: 'Are you want to ' + chalk.redBright('delete') + ' database ?',
 		default: false
 	});
 	if (answer) {

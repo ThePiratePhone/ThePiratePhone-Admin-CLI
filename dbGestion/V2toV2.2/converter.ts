@@ -10,22 +10,22 @@ export default async function convert2to2_2() {
 		converted = 0,
 		updated = 0;
 
-	const URI1 = await input({ message: 'Enter the URI of the origine database:' });
-	const URI2 = await input({ message: 'Enter the URI of the destination database:' });
+	const URI1 = await input({ message: 'Enter the URI of the origine database:' }),
+		URI2 = await input({ message: 'Enter the URI of the destination database:' });
 	//create connections
 	startDate = Date.now();
 	console.log('connecting to databases...');
-	const connection1 = mongoose.createConnection(URI1);
-	const connection2 = mongoose.createConnection(URI2);
+	const connection1 = mongoose.createConnection(URI1),
+		connection2 = mongoose.createConnection(URI2);
 	console.log(`connected in ${Date.now() - startDate}ms`);
 	//create models
 	console.log('registering models...');
-	const call2 = connection1.model('call', callModel2);
-	const Campaign2 = connection1.model('campaign', campaignModel2);
-	const Client2 = connection1.model('client', clientModel2);
-	const Call22 = connection2.model('call', CallModel22);
-	const Campaign22 = connection2.model('campaign', CampaignModel22);
-	const Client22 = connection2.model('client', ClientModel22);
+	const call2 = connection1.model('call', callModel2),
+		Campaign2 = connection1.model('campaign', campaignModel2),
+		Client2 = connection1.model('client', clientModel2),
+		Call22 = connection2.model('call', CallModel22),
+		Campaign22 = connection2.model('campaign', CampaignModel22),
+		Client22 = connection2.model('client', ClientModel22);
 	console.log(`models registered in ${Date.now() - startDate}ms`);
 	await destrucDb(URI2);
 

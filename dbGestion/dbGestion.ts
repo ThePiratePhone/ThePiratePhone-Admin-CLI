@@ -8,6 +8,7 @@ import createCampaign from './createCampaing';
 import createClient from './createClient';
 import { destrucDb } from './dbUtils';
 import converter from './V1toV2/converter';
+import moveData from './mover';
 
 async function dbGestion() {
 	console.clear();
@@ -41,6 +42,10 @@ async function dbGestion() {
 				value: 'create_caller'
 			},
 			{
+				name: 'move data',
+				value: 'move_data'
+			},
+			{
 				name: chalk.greenBright('Home'),
 				value: 'home'
 			},
@@ -69,6 +74,9 @@ async function dbGestion() {
 			break;
 		case 'create_caller':
 			await createCaller();
+			break;
+		case 'move_data':
+			moveData();
 			break;
 		case 'home':
 			home();
