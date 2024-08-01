@@ -14,6 +14,10 @@ async function dbGestion() {
 	console.clear();
 	console.log(simpleFiglet('TPP Admin CLI'));
 	console.log(chalk.blueBright('=> DB Gestion'));
+	console.log(
+		'your default database is :',
+		chalk.greenBright(process.env.defaultURI?.split('/').at(-1)?.split('?').at(0))
+	);
 	const answer = await select({
 		message: 'witch action on database ?',
 		choices: [

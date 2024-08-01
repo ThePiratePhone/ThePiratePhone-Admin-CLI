@@ -65,6 +65,7 @@ export default async function createCaller() {
 		});
 	} while (!corect);
 	log('creating caller...', 'log');
+	time = Date.now();
 	const newCaller = new caller({
 		name,
 		phone,

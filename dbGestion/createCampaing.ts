@@ -66,10 +66,10 @@ export default async function createCampaign() {
 		printTab([
 			['name', name],
 			['script', script],
-			['dateStart', dateStart],
-			['dateEnd', dateEnd],
+			['dateStart', dateStart.toLocaleTimeString()],
+			['dateEnd', dateEnd.toLocaleTimeString()],
 			['password', CampaignPassword],
-			['areaId', areaId]
+			['areaId', areaId.toString()]
 		]);
 		corect = await confirm({
 			message: 'Is it correct ?',
